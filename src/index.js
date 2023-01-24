@@ -7,4 +7,4 @@ function add(x, y) {
   return x + y;
 }
 
-add(a, b);
+console.log(add(a, b));
