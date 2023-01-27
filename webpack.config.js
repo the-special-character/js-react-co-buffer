@@ -1,19 +1,31 @@
-var path = require("path");
+const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 // TODO: Explain why we have use old js for export
 module.exports = {
-  entry: "./src/index.js",
+  entry: './src/index.js',
   output: {
-    path: path.resolve(__dirname, "dist"),
-    filename: "main.js",
+    path: path.resolve(__dirname, 'dist'),
+    filename: 'main.js',
   },
   module: {
     rules: [
       {
         test: /\.js$/,
         exclude: /node_modules/,
-        use: "babel-loader",
+        use: 'babel-loader',
       },
     ],
+  },
+  plugins: [
+    new HtmlWebpackPlugin({
+      template: './public/index.html',
+      filename: 'index.html',
+    }),
+  ],
+  mode: 'development',
+  devServer: {
+    port: '3004',
+    open: true,
   },
 };

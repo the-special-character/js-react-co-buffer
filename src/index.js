@@ -1,4 +1,4 @@
-import Test, { a, b } from "./app";
+import Test, { a, b } from './app';
 
 const t = new Test();
 t.displayType();
