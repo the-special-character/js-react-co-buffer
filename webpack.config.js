@@ -23,6 +23,9 @@ module.exports = {
       filename: 'index.html',
     }),
   ],
+  resolve: {
+    extensions: ['.js', '.jsx', '.json'],
+  },
   mode: 'development',
   devServer: {
     port: '3004',
