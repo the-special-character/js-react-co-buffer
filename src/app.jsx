@@ -1,28 +1,27 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
-const bgColor = 'red';
-const color = 'white';
+// Props are the immutable
+// can pass N number of props
 
-// 1. first letter should be always upper case
-// 2. each component should return single Element
-// 3. style should be object and property name should be in camel case
-// 4. instead of class have to use className
+// Function Component
+// Stateless Component
 function App({ title, desc }) {
   return (
-    <>
-      <h1
-        style={{
-          backgroundColor: bgColor,
-          color,
-        }}
-        className="container"
-      >
-        {title}
-      </h1>
+    <div>
+      <h1>{title}</h1>
       <h2>{desc}</h2>
-      <input type="checkbox" />
-    </>
+    </div>
   );
 }
+
+App.propTypes = {
+  title: PropTypes.string.isRequired,
+  desc: PropTypes.string,
+};
+
+App.defaultProps = {
+  desc: 'N/A',
+};
 
 export default App;
