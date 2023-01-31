@@ -7,10 +7,12 @@ const container = document.getElementById('root');
 
 const root = createRoot(container);
 
+// Test.getDerivedStateFromProps = (props, state) => {};
+
 root.render(
   <>
     <App title="Yagnesh Modh" desc="Full Stack Developer" />
     <App title="Virat Kohli" />
-    <Test />
+    <Test count={10} />
   </>
 );

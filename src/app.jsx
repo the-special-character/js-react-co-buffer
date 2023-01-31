@@ -6,6 +6,8 @@ import PropTypes from 'prop-types';
 
 // Function Component
 // Stateless Component
+
+// base on props derive UI
 function App({ title, desc }) {
   return (
     <div>
