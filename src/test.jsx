@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 import Child1 from './child1';
 import Child2 from './child2';
 
+// HOOKS
+//
+
 // Life Cycle Method
 
 // 1. Mounting
@@ -12,14 +15,17 @@ import Child2 from './child2';
 
 // 2. Updating
 // -> getDerivedStateFromProps
-// -> shouldComponentUpdate (PureComponent / memo)
+// -> shouldComponentUpdate (PureComponent / memo) (IMP)
 // -> render
 // -> getSnapshotBeforeUpdate
 // -> componentDidUpdate
 
 // 3. Unmounting
+// -> componentWillUnmount (IMP)
 
 // 4. Error
+// -> getDerivedStateFromError
+// -> componentDidCatch
 
 // Class Component
 // stateful component
@@ -83,6 +89,29 @@ export default class Test extends Component {
     } catch (error) {}
   }
 
+  // to capture info and pass it to componentDidUpdate
+  getSnapshotBeforeUpdate(prevProps, prevState) {}
+
+  // Manipulate DOM Element
+  componentDidUpdate(prevProps, prevState) {
+    console.log(prevProps);
+    console.log(prevState);
+    console.log(this.state);
+    console.log(this.props);
+  }
+
+  static getDerivedStateFromError(error) {
+    return {
+      error,
+    };
+  }
+
+  // logging
+  componentDidCatch(error, errorInfo) {
+    // server call
+    console.log(errorInfo.componentStack);
+  }
+
   increment = () => {
     this.setState((state) => ({
       count: state.count + 1,
@@ -97,8 +126,12 @@ export default class Test extends Component {
 
   render() {
     console.log('render');
-    const { count, name } = this.state;
+    const { count, name, error } = this.state;
     // never write any logic inside render method
+    if (error) {
+      return <h1>{error.message}</h1>;
+    }
+
     return (
       <div id="test">
         <p>{name}</p>
@@ -111,7 +144,7 @@ export default class Test extends Component {
         </button>
         <div>
           <Child1 />
-          <Child2 count={count} />
+          {count < 12 && <Child2 count={count} />}
         </div>
 
         <button
