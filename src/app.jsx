@@ -1,29 +1,59 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import './style.scss';
+import './todo.scss';
 
-// Props are the immutable
-// can pass N number of props
+export default class App extends Component {
+  state = {};
 
-// Function Component
-// Stateless Component
-
-// base on props derive UI
-function App({ title, desc }) {
-  return (
-    <div>
-      <h1>{title}</h1>
-      <h2>{desc}</h2>
-    </div>
-  );
+  render() {
+    return (
+      <div className="todo">
+        <h1 className="todo__title">Todo App</h1>
+        <form className="todo__form">
+          <div>
+            <label htmlFor="todoText" className="sr-only">
+              Todo Text
+            </label>
+            <input type="text" id="todoText" className="rounded-l-md" />
+          </div>
+          <button type="submit" className="btn rounded-r-md">
+            Add Todo
+          </button>
+        </form>
+        <div className="todo__list">
+          <div className="todo__list-item">
+            <input type="checkbox" name="" id="" />
+            <p className="px-4 flex-1">
+              Lorem ipsum dolor, sit amet consectetur adipisicing elit. Iure,
+              ullam.
+            </p>
+            <button type="button" className="btn rounded-md">
+              Delete
+            </button>
+          </div>
+          <div className="todo__list-item">
+            <input type="checkbox" name="" id="" />
+            <p className="px-4 flex-1">
+              Lorem ipsum dolor, sit amet consectetur adipisicing elit. Iure,
+              ullam.
+            </p>
+            <button type="button" className="btn rounded-md">
+              Delete
+            </button>
+          </div>
+        </div>
+        <div className="todo__filter">
+          <button type="button" className="btn flex-1">
+            All
+          </button>
+          <button type="button" className="btn btn--active flex-1">
+            Pending
+          </button>
+          <button type="button" className="btn flex-1">
+            Completed
+          </button>
+        </div>
+      </div>
+    );
+  }
 }
-
-App.propTypes = {
-  title: PropTypes.string.isRequired,
-  desc: PropTypes.string,
-};
-
-App.defaultProps = {
-  desc: 'N/A',
-};
-
-export default App;
