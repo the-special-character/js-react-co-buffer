@@ -1,46 +1,80 @@
-import React, { Component } from 'react';
+import React, { Component, createRef } from 'react';
 import './style.scss';
 import './todo.scss';
 
 export default class App extends Component {
-  state = {};
+  state = {
+    todoList: [],
+  };
+
+  todoTextRef = createRef();
+
+  // changeText = (event) => {
+  //   this.setState({ todoText: event.target.value });
+  // };
+
+  addTodo = (event) => {
+    event.preventDefault();
+
+    // O(logN)
+    // const todoTextElement = document.getElementById('todoText');
+
+    // if (todoTextElement) {
+    // O(1)
+
+    // async code
+    this.setState(
+      ({ todoList }) => ({
+        todoList: [
+          ...todoList,
+          { id: new Date().valueOf(), text: this.todoTextRef.current.value },
+        ],
+      }),
+      () => {
+        this.todoTextRef.current.value = '';
+      }
+    );
+
+    // sync code
+
+    // }
+  };
 
   render() {
+    const { todoList } = this.state;
+    console.log('render');
+
     return (
       <div className="todo">
         <h1 className="todo__title">Todo App</h1>
-        <form className="todo__form">
+        <form className="todo__form" onSubmit={this.addTodo}>
           <div>
             <label htmlFor="todoText" className="sr-only">
               Todo Text
             </label>
-            <input type="text" id="todoText" className="rounded-l-md" />
+            <input
+              ref={this.todoTextRef}
+              type="text"
+              id="todoText"
+              className="rounded-l-md"
+              // value={todoText}
+              // onChange={this.changeText}
+            />
           </div>
           <button type="submit" className="btn rounded-r-md">
             Add Todo
           </button>
         </form>
         <div className="todo__list">
-          <div className="todo__list-item">
-            <input type="checkbox" name="" id="" />
-            <p className="px-4 flex-1">
-              Lorem ipsum dolor, sit amet consectetur adipisicing elit. Iure,
-              ullam.
-            </p>
-            <button type="button" className="btn rounded-md">
-              Delete
-            </button>
-          </div>
-          <div className="todo__list-item">
-            <input type="checkbox" name="" id="" />
-            <p className="px-4 flex-1">
-              Lorem ipsum dolor, sit amet consectetur adipisicing elit. Iure,
-              ullam.
-            </p>
-            <button type="button" className="btn rounded-md">
-              Delete
-            </button>
-          </div>
+          {todoList.map((x) => (
+            <div className="todo__list-item" key={x.id}>
+              <input type="checkbox" name="" id="" />
+              <p className="px-4 flex-1">{x.text}</p>
+              <button type="button" className="btn rounded-md">
+                Delete
+              </button>
+            </div>
+          ))}
         </div>
         <div className="todo__filter">
           <button type="button" className="btn flex-1">
