@@ -1,4 +1,5 @@
 import React, { Component, createRef } from 'react';
+import clsx from 'clsx';
 import './style.scss';
 import './todo.scss';
 
@@ -9,35 +10,51 @@ export default class App extends Component {
 
   todoTextRef = createRef();
 
-  // changeText = (event) => {
-  //   this.setState({ todoText: event.target.value });
-  // };
-
   addTodo = (event) => {
     event.preventDefault();
 
-    // O(logN)
-    // const todoTextElement = document.getElementById('todoText');
-
-    // if (todoTextElement) {
-    // O(1)
-
-    // async code
     this.setState(
       ({ todoList }) => ({
         todoList: [
           ...todoList,
-          { id: new Date().valueOf(), text: this.todoTextRef.current.value },
+          {
+            id: new Date().valueOf(),
+            text: this.todoTextRef.current.value,
+            isDone: false,
+          },
         ],
       }),
       () => {
         this.todoTextRef.current.value = '';
       }
     );
+  };
 
-    // sync code
+  updateTodo = (item) => {
+    console.log(item);
+    this.setState(({ todoList }) => {
+      const index = todoList.findIndex((x) => x.id === item.id);
+      return {
+        todoList: [
+          ...todoList.slice(0, index),
+          { ...item, isDone: !item.isDone },
+          ...todoList.slice(index + 1),
+        ],
+      };
+    });
+  };
 
-    // }
+  deleteTodo = (item) => {
+    const isConfirmed = confirm('Are you sure want to delete this item');
+    if (isConfirmed) {
+      console.log(item);
+      this.setState(({ todoList }) => {
+        const index = todoList.findIndex((x) => x.id === item.id);
+        return {
+          todoList: [...todoList.slice(0, index), ...todoList.slice(index + 1)],
+        };
+      });
+    }
   };
 
   render() {
@@ -57,8 +74,6 @@ export default class App extends Component {
               type="text"
               id="todoText"
               className="rounded-l-md"
-              // value={todoText}
-              // onChange={this.changeText}
             />
           </div>
           <button type="submit" className="btn rounded-r-md">
@@ -68,9 +83,23 @@ export default class App extends Component {
         <div className="todo__list">
           {todoList.map((x) => (
             <div className="todo__list-item" key={x.id}>
-              <input type="checkbox" name="" id="" />
-              <p className="px-4 flex-1">{x.text}</p>
-              <button type="button" className="btn rounded-md">
+              <input
+                type="checkbox"
+                checked={x.isDone}
+                onChange={() => this.updateTodo(x)}
+              />
+              <p
+                className={clsx('px-4 flex-1', {
+                  'line-through': x.isDone,
+                })}
+              >
+                {x.text}
+              </p>
+              <button
+                type="button"
+                className="btn rounded-md"
+                onClick={() => this.deleteTodo(x)}
+              >
                 Delete
               </button>
             </div>
