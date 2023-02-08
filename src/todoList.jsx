@@ -1,6 +1,6 @@
-import clsx from 'clsx';
 import React, { memo } from 'react';
 import PropTypes from 'prop-types';
+import TodoListItem from './todoListItem';
 
 function TodoList({
   todoList,
@@ -11,7 +11,6 @@ function TodoList({
   console.log('Todo List render');
   return (
     <>
-      {/* O(N) */}
       {todoList.map((x) => {
         if (
           filterStatus === 'all' ||
@@ -21,27 +20,12 @@ function TodoList({
             x.isDone === true)
         ) {
           return (
-            <div className="todo__list-item" key={x.id}>
-              <input
-                type="checkbox"
-                checked={x.isDone}
-                onChange={() => updateTodo(x)}
-              />
-              <p
-                className={clsx('px-4 flex-1', {
-                  'line-through': x.isDone,
-                })}
-              >
-                {x.text}
-              </p>
-              <button
-                type="button"
-                className="btn rounded-md"
-                onClick={() => deleteTodo(x)}
-              >
-                Delete
-              </button>
-            </div>
+            <TodoListItem
+              key={x.id}
+              item={x}
+              updateTodo={updateTodo}
+              deleteTodo={deleteTodo}
+            />
           );
         }
         return null;
