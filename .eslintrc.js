@@ -11,5 +11,10 @@ module.exports = {
     sourceType: 'module',
   },
   plugins: ['react'],
-  rules: {},
+  rules: {
+    'operator-linebreak': ['error', 'after'],
+    'jsx-a11y/label-has-associated-control': ['error', { assert: 'either' }],
+    'no-restricted-globals': ['error', 'event'],
+    'react/state-in-constructor': 0,
+  },
 };

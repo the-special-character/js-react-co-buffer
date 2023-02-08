@@ -1,11 +1,16 @@
-import React, { Component, createRef } from 'react';
-import clsx from 'clsx';
+import React, { PureComponent, createRef } from 'react';
 import './style.scss';
 import './todo.scss';
+import TodoForm from './todoForm';
+import TodoList from './todoList';
+import TodoFilter from './todoFilter';
 
-export default class App extends Component {
+// O(N)
+
+export default class App extends PureComponent {
   state = {
     todoList: [],
+    filterStatus: 'all',
   };
 
   todoTextRef = createRef();
@@ -26,14 +31,15 @@ export default class App extends Component {
       }),
       () => {
         this.todoTextRef.current.value = '';
-      }
+      },
     );
   };
 
   updateTodo = (item) => {
-    console.log(item);
     this.setState(({ todoList }) => {
-      const index = todoList.findIndex((x) => x.id === item.id);
+      const index = todoList.findIndex(
+        (x) => x.id === item.id,
+      );
       return {
         todoList: [
           ...todoList.slice(0, index),
@@ -45,77 +51,53 @@ export default class App extends Component {
   };
 
   deleteTodo = (item) => {
-    const isConfirmed = confirm('Are you sure want to delete this item');
+    const isConfirmed = confirm(
+      'Are you sure want to delete this item',
+    );
     if (isConfirmed) {
-      console.log(item);
       this.setState(({ todoList }) => {
-        const index = todoList.findIndex((x) => x.id === item.id);
+        const index = todoList.findIndex(
+          (x) => x.id === item.id,
+        );
         return {
-          todoList: [...todoList.slice(0, index), ...todoList.slice(index + 1)],
+          todoList: [
+            ...todoList.slice(0, index),
+            ...todoList.slice(index + 1),
+          ],
         };
       });
     }
   };
 
+  filterTodo = (filterStatus) => {
+    this.setState({ filterStatus });
+  };
+
   render() {
-    const { todoList } = this.state;
+    const { todoList, filterStatus } = this.state;
     console.log('render');
 
     return (
       <div className="todo">
         <h1 className="todo__title">Todo App</h1>
-        <form className="todo__form" onSubmit={this.addTodo}>
-          <div>
-            <label htmlFor="todoText" className="sr-only">
-              Todo Text
-            </label>
-            <input
-              ref={this.todoTextRef}
-              type="text"
-              id="todoText"
-              className="rounded-l-md"
-            />
-          </div>
-          <button type="submit" className="btn rounded-r-md">
-            Add Todo
-          </button>
-        </form>
+        <TodoForm
+          addTodo={this.addTodo}
+          ref={this.todoTextRef}
+        />
         <div className="todo__list">
-          {todoList.map((x) => (
-            <div className="todo__list-item" key={x.id}>
-              <input
-                type="checkbox"
-                checked={x.isDone}
-                onChange={() => this.updateTodo(x)}
-              />
-              <p
-                className={clsx('px-4 flex-1', {
-                  'line-through': x.isDone,
-                })}
-              >
-                {x.text}
-              </p>
-              <button
-                type="button"
-                className="btn rounded-md"
-                onClick={() => this.deleteTodo(x)}
-              >
-                Delete
-              </button>
-            </div>
-          ))}
+          {todoList.length > 0 && (
+            <TodoList
+              todoList={todoList}
+              filterStatus={filterStatus}
+              updateTodo={this.updateTodo}
+              deleteTodo={this.deleteTodo}
+            />
+          )}
         </div>
-        <div className="todo__filter">
-          <button type="button" className="btn flex-1">
-            All
-          </button>
-          <button type="button" className="btn btn--active flex-1">
-            Pending
-          </button>
-          <button type="button" className="btn flex-1">
-            Completed
-          </button>
-        </div>
+        <TodoFilter
+          filterStatus={filterStatus}
+          filterTodo={this.filterTodo}
+        />
       </div>
     );
   }
