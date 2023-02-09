@@ -13,8 +13,12 @@ module.exports = {
   plugins: ['react'],
   rules: {
     'operator-linebreak': ['error', 'after'],
-    'jsx-a11y/label-has-associated-control': ['error', { assert: 'either' }],
+    'jsx-a11y/label-has-associated-control': [
+      'error',
+      { assert: 'either' },
+    ],
     'no-restricted-globals': ['error', 'event'],
     'react/state-in-constructor': 0,
+    'implicit-arrow-linebreak': 0,
   },
 };

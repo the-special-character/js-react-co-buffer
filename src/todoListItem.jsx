@@ -2,13 +2,21 @@ import React, { memo } from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 
-function TodoListItem({ item, updateTodo, deleteTodo }) {
+function TodoListItem({
+  item,
+  updateTodo,
+  deleteTodo,
+  updateTodoState,
+  deleteTodoState,
+}) {
   console.log('TodoList Item');
   return (
     <div className="todo__list-item" key={item.id}>
       <input
         type="checkbox"
         checked={item.isDone}
+        className="disabled:text-slate-400 disabled:cursor-wait"
+        disabled={updateTodoState?.status === 'REQUEST'}
         onChange={() => updateTodo(item)}
       />
       <p
@@ -20,7 +28,8 @@ function TodoListItem({ item, updateTodo, deleteTodo }) {
       </p>
       <button
         type="button"
-        className="btn rounded-md"
+        className="btn rounded-md disabled:bg-slate-500 disabled:cursor-wait"
+        disabled={deleteTodoState?.status === 'REQUEST'}
         onClick={() => deleteTodo(item)}
       >
         Delete
@@ -37,6 +46,21 @@ TodoListItem.propTypes = {
   }).isRequired,
   updateTodo: PropTypes.func.isRequired,
   deleteTodo: PropTypes.func.isRequired,
+  updateTodoState: PropTypes.shape({
+    type: PropTypes.oneOf(['UPDATE_TODO']).isRequired,
+    status: PropTypes.oneOf(['REQUEST', 'ERROR'])
+      .isRequired,
+  }),
+  deleteTodoState: PropTypes.shape({
+    type: PropTypes.oneOf(['DELETE_TODO']).isRequired,
+    status: PropTypes.oneOf(['REQUEST', 'ERROR'])
+      .isRequired,
+  }),
+};
+
+TodoListItem.defaultProps = {
+  updateTodoState: undefined,
+  deleteTodoState: undefined,
 };
 
 export default memo(TodoListItem);
