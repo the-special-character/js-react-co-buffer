@@ -15,46 +15,73 @@ export default class App extends PureComponent {
 
   todoTextRef = createRef();
 
-  addTodo = (event) => {
-    event.preventDefault();
+  componentDidMount() {
+    this.loadTodo();
+  }
 
-    this.setState(
-      ({ todoList }) => ({
-        todoList: [
-          ...todoList,
-          {
-            id: new Date().valueOf(),
+  loadTodo = async () => {
+    try {
+      const res = await fetch(
+        'http://localhost:3000/todoList',
+      );
+      const json = await res.json();
+      this.setState({ todoList: json });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  addTodo = async (event) => {
+    event.preventDefault();
+    try {
+      const res = await fetch(
+        'http://localhost:3000/todoList',
+        {
+          method: 'POST',
+          body: JSON.stringify({
             text: this.todoTextRef.current.value,
             isDone: false,
+          }),
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
           },
-        ],
-      }),
-      () => {
-        this.todoTextRef.current.value = '';
-      },
-    );
-  };
-
-  updateTodo = (item) => {
-    this.setState(({ todoList }) => {
-      const index = todoList.findIndex(
-        (x) => x.id === item.id,
+        },
       );
-      return {
-        todoList: [
-          ...todoList.slice(0, index),
-          { ...item, isDone: !item.isDone },
-          ...todoList.slice(index + 1),
-        ],
-      };
-    });
+      const json = await res.json();
+
+      this.setState(
+        ({ todoList }) => ({
+          todoList: [...todoList, json],
+        }),
+        () => {
+          this.todoTextRef.current.value = '';
+        },
+      );
+    } catch (error) {
+      console.log(error);
+    }
   };
 
-  deleteTodo = (item) => {
-    const isConfirmed = confirm(
-      'Are you sure want to delete this item',
-    );
-    if (isConfirmed) {
+  updateTodo = async (item) => {
+    try {
+      const res = await fetch(
+        `http://localhost:3000/todoList/${item.id}`,
+        {
+          method: 'PUT',
+          body: JSON.stringify({
+            ...item,
+            isDone: !item.isDone,
+          }),
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+          },
+        },
+      );
+
+      const json = await res.json();
+
       this.setState(({ todoList }) => {
         const index = todoList.findIndex(
           (x) => x.id === item.id,
@@ -62,10 +89,40 @@ export default class App extends PureComponent {
         return {
           todoList: [
             ...todoList.slice(0, index),
+            json,
             ...todoList.slice(index + 1),
           ],
         };
       });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  deleteTodo = async (item) => {
+    const isConfirmed = confirm(
+      'Are you sure want to delete this item',
+    );
+    if (isConfirmed) {
+      try {
+        await fetch(
+          `http://localhost:3000/todoList/${item.id}`,
+          {
+            method: 'DELETE',
+          },
+        );
+        this.setState(({ todoList }) => {
+          const index = todoList.findIndex(
+            (x) => x.id === item.id,
+          );
+          return {
+            todoList: [
+              ...todoList.slice(0, index),
+              ...todoList.slice(index + 1),
+            ],
+          };
+        });
+      } catch (error) {}
     }
   };
 
