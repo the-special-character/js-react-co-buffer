@@ -20,5 +20,6 @@ module.exports = {
     'no-restricted-globals': ['error', 'event'],
     'react/state-in-constructor': 0,
     'implicit-arrow-linebreak': 0,
+    'react/static-property-placement': 0,
   },
 };
