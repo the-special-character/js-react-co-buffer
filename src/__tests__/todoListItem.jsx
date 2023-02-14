@@ -45,4 +45,17 @@ describe('TodoListItem', () => {
     expect(updateTodo).toBeCalledTimes(1);
     expect(updateTodo).toBeCalledWith(item);
   });
+
+  test('should render delete button', () => {
+    const deleteButton = screen.queryByRole('button');
+    expect(deleteButton).toBeDefined();
+    expect(deleteButton.innerHTML).toBe('Delete');
+  });
+
+  test('should button click', () => {
+    const deleteButton = screen.queryByRole('button');
+    fireEvent.click(deleteButton);
+    expect(deleteTodo).toBeCalledTimes(1);
+    expect(deleteTodo).toBeCalledWith(item);
+  });
 });

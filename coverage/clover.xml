@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1676369176763" clover="3.2.0">
-  <project timestamp="1676369176763" name="All files">
-    <metrics statements="5" coveredstatements="4" conditionals="0" coveredconditionals="0" methods="3" coveredmethods="2" elements="8" coveredelements="6" complexity="0" loc="5" ncloc="5" packages="1" files="1" classes="1"/>
+<coverage generated="1676370499711" clover="3.2.0">
+  <project timestamp="1676370499712" name="All files">
+    <metrics statements="5" coveredstatements="5" conditionals="0" coveredconditionals="0" methods="3" coveredmethods="3" elements="8" coveredelements="8" complexity="0" loc="5" ncloc="5" packages="1" files="1" classes="1"/>
     <file name="todoListItem.jsx" path="/Users/yagneshmodh/Documents/Projects/js-react-co-buffer/src/todoListItem.jsx">
-      <metrics statements="5" coveredstatements="4" conditionals="0" coveredconditionals="0" methods="3" coveredmethods="2"/>
-      <line num="12" count="3" type="stmt"/>
+      <metrics statements="5" coveredstatements="5" conditionals="0" coveredconditionals="0" methods="3" coveredmethods="3"/>
+      <line num="12" count="5" type="stmt"/>
       <line num="24" count="1" type="stmt"/>
-      <line num="38" count="0" type="stmt"/>
+      <line num="38" count="1" type="stmt"/>
       <line num="46" count="1" type="stmt"/>
       <line num="66" count="1" type="stmt"/>
     </file>
