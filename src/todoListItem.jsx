@@ -9,16 +9,21 @@ function TodoListItem({
   updateTodoState,
   deleteTodoState,
 }) {
-  console.log('TodoList Item');
   return (
     <div className="todo__list-item" key={item.id}>
-      <input
-        type="checkbox"
-        checked={item.isDone}
-        className="disabled:text-slate-400 disabled:cursor-wait"
-        disabled={updateTodoState?.status === 'REQUEST'}
-        onChange={() => updateTodo(item)}
-      />
+      <div>
+        <label htmlFor="isDone" className="sr-only">
+          Completed
+        </label>
+        <input
+          id="isDone"
+          type="checkbox"
+          checked={item.isDone}
+          className="disabled:text-slate-400 disabled:cursor-wait"
+          disabled={updateTodoState?.status === 'REQUEST'}
+          onChange={() => updateTodo(item)}
+        />
+      </div>
       <p
         className={clsx('px-4 flex-1', {
           'line-through': item.isDone,

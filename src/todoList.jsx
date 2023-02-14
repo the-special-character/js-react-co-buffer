@@ -9,7 +9,6 @@ function TodoList({
   updateTodoState,
   deleteTodoState,
 }) {
-  console.log('Todo List render');
   return (
     <>
       {todoList.map((x) => (
