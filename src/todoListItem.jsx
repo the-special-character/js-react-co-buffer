@@ -10,7 +10,11 @@ function TodoListItem({
   deleteTodoState,
 }) {
   return (
-    <div className="todo__list-item" key={item.id}>
+    <div
+      data-testid="todolist-item"
+      className="todo__list-item"
+      key={item.id}
+    >
       <div>
         <label htmlFor="isDone" className="sr-only">
           Completed

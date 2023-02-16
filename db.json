@@ -3,21 +3,16 @@
     {
       "text": "hello",
       "isDone": false,
-      "id": 8
-    },
-    {
-      "text": "hello",
-      "isDone": false,
       "id": 9
     },
     {
       "text": "hello",
-      "isDone": false,
+      "isDone": true,
       "id": 10
     },
     {
       "text": "how are you",
-      "isDone": false,
+      "isDone": true,
       "id": 11
     },
     {
