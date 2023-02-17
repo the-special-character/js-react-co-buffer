@@ -29,6 +29,7 @@ function TodoListItem({
         />
       </div>
       <p
+        data-testid="item-text"
         className={clsx('px-4 flex-1', {
           'line-through': item.isDone,
         })}

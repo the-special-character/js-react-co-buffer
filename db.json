@@ -2,7 +2,7 @@
   "todoList": [
     {
       "text": "hello",
-      "isDone": false,
+      "isDone": true,
       "id": 9
     },
     {

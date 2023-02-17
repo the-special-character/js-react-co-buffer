@@ -20,6 +20,14 @@ const todoList = [
   },
 ];
 
+const todoList1 = [
+  {
+    text: 'hello',
+    isDone: true,
+    id: 9,
+  },
+];
+
 describe('App Component', () => {
   test('should render app component', async () => {
     mock.onGet('/todoList').reply(200, todoList);
@@ -69,5 +77,57 @@ describe('App Component', () => {
         screen.queryAllByTestId('todolist-item').length,
       ).toBe(2),
     );
+  });
+
+  test('should update todo', async () => {
+    mock.onGet('/todoList').reply(200, todoList);
+    mock
+      .onPut('todoList/9')
+      .reply(200, { ...todoList[0], isDone: true });
+
+    render(<App />);
+
+    await waitForElementToBeRemoved(() =>
+      screen.queryByText(/Loading.../i),
+    );
+
+    const checkbox = screen.queryByLabelText('Completed');
+    const itemtext = screen.queryByTestId('item-text');
+
+    expect(itemtext).not.toHaveClass('line-through');
+    expect(checkbox).not.toBeChecked();
+
+    fireEvent.click(checkbox);
+
+    await waitFor(() => {
+      expect(checkbox).toBeChecked();
+      expect(itemtext).toHaveClass('line-through');
+    });
+  });
+
+  test('should update todo on checked input', async () => {
+    mock.onGet('/todoList').reply(200, todoList1);
+    mock
+      .onPut('todoList/9')
+      .reply(200, { ...todoList[0], isDone: false });
+
+    render(<App />);
+
+    await waitForElementToBeRemoved(() =>
+      screen.queryByText(/Loading.../i),
+    );
+
+    const checkbox = screen.queryByLabelText('Completed');
+    const itemtext = screen.queryByTestId('item-text');
+
+    expect(itemtext).toHaveClass('line-through');
+    expect(checkbox).toBeChecked();
+
+    fireEvent.click(checkbox);
+
+    await waitFor(() => {
+      expect(checkbox).not.toBeChecked();
+      expect(itemtext).not.toHaveClass('line-through');
+    });
   });
 });

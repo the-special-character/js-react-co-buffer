@@ -55,6 +55,7 @@ exports[`App Component should render app component 1`] = `
         </div>
         <p
           class="px-4 flex-1"
+          data-testid="item-text"
         >
           hello
         </p>
