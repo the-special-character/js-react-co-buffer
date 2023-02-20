@@ -1,64 +1,29 @@
 {
   "todoList": [
     {
-      "text": "hello",
-      "isDone": true,
-      "id": 9
-    },
-    {
-      "text": "hello",
-      "isDone": true,
-      "id": 10
-    },
-    {
-      "text": "how are you",
-      "isDone": true,
-      "id": 11
-    },
-    {
-      "text": "asdfadsf",
-      "isDone": false,
-      "id": 12
-    },
-    {
-      "text": "asdf",
-      "isDone": false,
-      "id": 13
-    },
-    {
-      "text": "asdf",
-      "isDone": false,
-      "id": 14
-    },
-    {
-      "text": "asdf",
-      "isDone": false,
-      "id": 15
-    },
-    {
-      "text": "asdfasdfasdf",
-      "isDone": false,
-      "id": 16
-    },
-    {
       "text": "asdfasdf",
-      "isDone": false,
-      "id": 17
-    },
-    {
-      "text": "asdf",
-      "isDone": false,
-      "id": 18
-    },
-    {
-      "text": "asdfasdf",
-      "isDone": false,
-      "id": 19
-    },
-    {
-      "text": "asdfasdf",
-      "isDone": false,
+      "isDone": true,
       "id": 20
+    },
+    {
+      "text": "adfasdf",
+      "isDone": true,
+      "id": 21
+    },
+    {
+      "text": "asdfads",
+      "isDone": false,
+      "id": 22
+    },
+    {
+      "text": "asdf",
+      "isDone": false,
+      "id": 23
+    },
+    {
+      "text": "asdfasdf",
+      "isDone": false,
+      "id": 24
     }
   ]
 }

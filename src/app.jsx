@@ -67,6 +67,8 @@ export default class App extends PureComponent {
         params,
       });
 
+      console.log(res.data);
+
       this.setState(({ appState }) => ({
         todoList: res.data,
         filterStatus,
@@ -158,48 +160,43 @@ export default class App extends PureComponent {
   };
 
   deleteTodo = async (item) => {
-    const isConfirmed = confirm(
-      'Are you sure want to delete this item',
-    );
-    if (isConfirmed) {
-      const type = 'DELETE_TODO';
-      const loadingId = item.id;
-      try {
-        this.setState(({ appState }) => ({
-          appState: requestState({
-            appState,
-            type,
-            loadingId,
-          }),
-        }));
-        await axiosInstance.delete(`todoList/${item.id}`);
+    const type = 'DELETE_TODO';
+    const loadingId = item.id;
+    try {
+      this.setState(({ appState }) => ({
+        appState: requestState({
+          appState,
+          type,
+          loadingId,
+        }),
+      }));
+      await axiosInstance.delete(`todoList/${item.id}`);
 
-        this.setState(({ todoList, appState }) => {
-          const index = todoList.findIndex(
-            (x) => x.id === item.id,
-          );
-          return {
-            todoList: [
-              ...todoList.slice(0, index),
-              ...todoList.slice(index + 1),
-            ],
-            appState: successState({
-              appState,
-              type,
-              loadingId,
-            }),
-          };
-        });
-      } catch (error) {
-        this.setState(({ appState }) => ({
-          appState: errorState({
+      this.setState(({ todoList, appState }) => {
+        const index = todoList.findIndex(
+          (x) => x.id === item.id,
+        );
+        return {
+          todoList: [
+            ...todoList.slice(0, index),
+            ...todoList.slice(index + 1),
+          ],
+          appState: successState({
             appState,
             type,
-            error,
             loadingId,
           }),
-        }));
-      }
+        };
+      });
+    } catch (error) {
+      this.setState(({ appState }) => ({
+        appState: errorState({
+          appState,
+          type,
+          error,
+          loadingId,
+        }),
+      }));
     }
   };
 

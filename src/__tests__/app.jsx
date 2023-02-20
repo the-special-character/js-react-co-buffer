@@ -28,7 +28,24 @@ const todoList1 = [
   },
 ];
 
+const pendingTodos = [
+  {
+    text: 'asdfads',
+    isDone: false,
+    id: 22,
+  },
+  {
+    text: 'asdf',
+    isDone: false,
+    id: 23,
+  },
+];
+
 describe('App Component', () => {
+  beforeEach(() => {
+    mock.reset();
+  });
+
   test('should render app component', async () => {
     mock.onGet('/todoList').reply(200, todoList);
     const { asFragment } = render(<App />);
@@ -128,6 +145,48 @@ describe('App Component', () => {
     await waitFor(() => {
       expect(checkbox).not.toBeChecked();
       expect(itemtext).not.toHaveClass('line-through');
+    });
+  });
+
+  test('should delete todo on click of delete button', async () => {
+    mock.onGet('/todoList').reply(200, todoList1);
+    mock.onDelete('todoList/9').reply(200, {});
+
+    render(<App />);
+
+    await waitForElementToBeRemoved(() =>
+      screen.queryByText(/Loading.../i),
+    );
+
+    const deleteButton = screen.queryByText('Delete');
+
+    fireEvent.click(deleteButton);
+
+    await waitFor(() =>
+      expect(deleteButton).not.toBeInTheDocument(),
+    );
+  });
+
+  test('should display only pending records', async () => {
+    mock.onGet('/todoList').reply(200, todoList1);
+
+    render(<App />);
+
+    await waitForElementToBeRemoved(() =>
+      screen.queryByText(/Loading.../i),
+    );
+
+    mock.reset();
+    mock.onGet('/todoList').reply(200, pendingTodos);
+
+    const pendingButton = screen.queryByText('Pending');
+
+    fireEvent.click(pendingButton);
+
+    await waitFor(() => {
+      expect(
+        screen.queryAllByTestId('todolist-item').length,
+      ).toBe(2);
     });
   });
 });
