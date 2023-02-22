@@ -26,6 +26,8 @@ const TodoForm = forwardRef(
   ),
 );
 
+TodoForm.displayName = 'TodoForm';
+
 TodoForm.propTypes = {
   addTodo: PropTypes.func.isRequired,
   addTodoState: PropTypes.shape({

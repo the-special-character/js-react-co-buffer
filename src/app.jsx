@@ -1,4 +1,10 @@
-import React, { PureComponent, createRef } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import './style.scss';
 import './todo.scss';
 import TodoForm from './todoForm';
@@ -36,30 +42,23 @@ const errorState = ({
     return x;
   });
 
-export default class App extends PureComponent {
-  state = {
-    todoList: [],
-    filterStatus: 'all',
-    appState: [],
-  };
+export default function App() {
+  const [todoList, setTodoList] = useState([]);
+  const [filterStatus, setFilterStatus] = useState('all');
+  const [appState, setAppState] = useState([]);
+  const todoTextRef = useRef();
 
-  todoTextRef = createRef();
-
-  componentDidMount() {
-    this.loadTodo('all');
-  }
-
-  loadTodo = async (filterStatus) => {
+  const loadTodo = useCallback(async (ft) => {
     const type = 'LOAD_TODO';
     try {
-      this.setState(({ appState }) => ({
-        appState: requestState({ appState, type }),
-      }));
+      setAppState((val) =>
+        requestState({ appState: val, type }),
+      );
 
       let params = {};
-      if (filterStatus !== 'all') {
+      if (ft !== 'all') {
         params = {
-          isDone: filterStatus === 'completed',
+          isDone: ft === 'completed',
         };
       }
 
@@ -67,60 +66,55 @@ export default class App extends PureComponent {
         params,
       });
 
-      console.log(res.data);
-
-      this.setState(({ appState }) => ({
-        todoList: res.data,
-        filterStatus,
-        appState: successState({ appState, type }),
-      }));
+      setTodoList(res.data);
+      setFilterStatus(ft);
+      setAppState((val) =>
+        successState({ appState: val, type }),
+      );
     } catch (error) {
-      this.setState(({ appState }) => ({
-        appState: errorState({ appState, type, error }),
-      }));
+      setAppState((val) =>
+        errorState({ appState: val, type, error }),
+      );
     }
-  };
+  }, []);
 
-  addTodo = async (event) => {
+  const addTodo = useCallback(async (event) => {
     event.preventDefault();
     const type = 'ADD_TODO';
     try {
-      this.setState(({ appState }) => ({
-        appState: requestState({ appState, type }),
-      }));
+      setAppState((val) =>
+        requestState({ appState: val, type }),
+      );
 
       const res = await axiosInstance.post('todoList', {
-        text: this.todoTextRef.current.value,
+        text: todoTextRef.current.value,
         isDone: false,
       });
 
-      this.setState(
-        ({ todoList, appState }) => ({
-          todoList: [...todoList, res.data],
-          appState: successState({ appState, type }),
-        }),
-        () => {
-          this.todoTextRef.current.value = '';
-        },
+      setTodoList((val) => [...val, res.data]);
+      setAppState((val) =>
+        successState({ appState: val, type }),
       );
-    } catch (error) {
-      this.setState(({ appState }) => ({
-        appState: errorState({ appState, type, error }),
-      }));
-    }
-  };
 
-  updateTodo = async (item) => {
+      todoTextRef.current.value = '';
+    } catch (error) {
+      setAppState((val) =>
+        errorState({ appState: val, type, error }),
+      );
+    }
+  }, []);
+
+  const updateTodo = useCallback(async (item) => {
     const type = 'UPDATE_TODO';
     const loadingId = item.id;
     try {
-      this.setState(({ appState }) => ({
-        appState: requestState({
-          appState,
+      setAppState((val) =>
+        requestState({
+          appState: val,
           type,
           loadingId,
         }),
-      }));
+      );
 
       const res = await axiosInstance.put(
         `todoList/${item.id}`,
@@ -130,127 +124,352 @@ export default class App extends PureComponent {
         },
       );
 
-      this.setState(({ todoList, appState }) => {
-        const index = todoList.findIndex(
+      setTodoList((val) => {
+        const index = val.findIndex(
           (x) => x.id === item.id,
         );
-        return {
-          todoList: [
-            ...todoList.slice(0, index),
-            res.data,
-            ...todoList.slice(index + 1),
-          ],
-          appState: successState({
-            appState,
-            type,
-            loadingId,
-          }),
-        };
+        return [
+          ...val.slice(0, index),
+          res.data,
+          ...val.slice(index + 1),
+        ];
       });
+
+      setAppState((val) =>
+        successState({
+          appState: val,
+          type,
+          loadingId,
+        }),
+      );
     } catch (error) {
-      this.setState(({ appState }) => ({
-        appState: errorState({
-          appState,
+      setAppState((val) =>
+        errorState({
+          appState: val,
           type,
           error,
           loadingId,
         }),
-      }));
+      );
     }
-  };
+  }, []);
 
-  deleteTodo = async (item) => {
+  const deleteTodo = useCallback(async (item) => {
     const type = 'DELETE_TODO';
     const loadingId = item.id;
     try {
-      this.setState(({ appState }) => ({
-        appState: requestState({
-          appState,
+      setAppState((val) =>
+        requestState({
+          appState: val,
           type,
           loadingId,
         }),
-      }));
+      );
       await axiosInstance.delete(`todoList/${item.id}`);
 
-      this.setState(({ todoList, appState }) => {
-        const index = todoList.findIndex(
+      setTodoList((val) => {
+        const index = val.findIndex(
           (x) => x.id === item.id,
         );
-        return {
-          todoList: [
-            ...todoList.slice(0, index),
-            ...todoList.slice(index + 1),
-          ],
-          appState: successState({
-            appState,
-            type,
-            loadingId,
-          }),
-        };
+        return [
+          ...val.slice(0, index),
+          ...val.slice(index + 1),
+        ];
       });
+
+      setAppState((val) =>
+        successState({
+          appState: val,
+          type,
+          loadingId,
+        }),
+      );
     } catch (error) {
-      this.setState(({ appState }) => ({
-        appState: errorState({
-          appState,
+      setAppState((val) =>
+        errorState({
+          appState: val,
           type,
           error,
           loadingId,
         }),
-      }));
+      );
     }
-  };
+  }, []);
 
-  render() {
-    const { todoList, filterStatus, appState } = this.state;
+  useEffect(() => {
+    loadTodo('all');
+  }, [loadTodo]);
 
-    const loadTodoState = appState.find(
-      (x) => x.type === 'LOAD_TODO',
-    );
+  const loadTodoState = useMemo(
+    () => appState.find((x) => x.type === 'LOAD_TODO'),
+    [appState],
+  );
 
-    const addTodoState = appState.find(
-      (x) => x.type === 'ADD_TODO',
-    );
+  const addTodoState = useMemo(
+    () => appState.find((x) => x.type === 'ADD_TODO'),
+    [appState],
+  );
 
-    const updateTodoState = appState.filter(
-      (x) => x.type === 'UPDATE_TODO',
-    );
+  const updateTodoState = useMemo(
+    () => appState.filter((x) => x.type === 'UPDATE_TODO'),
+    [appState],
+  );
 
-    const deleteTodoState = appState.filter(
-      (x) => x.type === 'DELETE_TODO',
-    );
+  const deleteTodoState = useMemo(
+    () => appState.filter((x) => x.type === 'DELETE_TODO'),
+    [appState],
+  );
 
-    if (loadTodoState?.status === 'REQUEST') {
-      return <h1>Loading...</h1>;
-    }
-
-    if (loadTodoState?.status === 'ERROR') {
-      return <h1>{loadTodoState.message}</h1>;
-    }
-
-    return (
-      <div className="todo">
-        <h1 className="todo__title">Todo App</h1>
-        <TodoForm
-          addTodo={this.addTodo}
-          ref={this.todoTextRef}
-          addTodoState={addTodoState}
-        />
-        <div className="todo__list">
-          {todoList.length > 0 && (
-            <TodoList
-              todoList={todoList}
-              updateTodo={this.updateTodo}
-              deleteTodo={this.deleteTodo}
-              updateTodoState={updateTodoState}
-              deleteTodoState={deleteTodoState}
-            />
-          )}
-        </div>
-        <TodoFilter
-          filterStatus={filterStatus}
-          filterTodo={this.loadTodo}
-        />
-      </div>
-    );
+  if (loadTodoState?.status === 'REQUEST') {
+    return <h1>Loading...</h1>;
   }
+
+  if (loadTodoState?.status === 'ERROR') {
+    return <h1>{loadTodoState.message}</h1>;
+  }
+
+  return (
+    <div className="todo">
+      <h1 className="todo__title">Todo App</h1>
+      <TodoForm
+        addTodo={addTodo}
+        ref={todoTextRef}
+        addTodoState={addTodoState}
+      />
+      <div className="todo__list">
+        {todoList.length > 0 && (
+          <TodoList
+            todoList={todoList}
+            updateTodo={updateTodo}
+            deleteTodo={deleteTodo}
+            updateTodoState={updateTodoState}
+            deleteTodoState={deleteTodoState}
+          />
+        )}
+      </div>
+      <TodoFilter
+        filterStatus={filterStatus}
+        filterTodo={loadTodo}
+      />
+    </div>
+  );
 }
+
+// export default class App extends PureComponent {
+//   state = {
+//     todoList: [],
+//     filterStatus: 'all',
+//     appState: [],
+//   };
+
+//   todoTextRef = createRef();
+
+//   componentDidMount() {
+//     this.loadTodo('all');
+//   }
+
+//   loadTodo = async (filterStatus) => {
+//     const type = 'LOAD_TODO';
+//     try {
+//       this.setState(({ appState }) => ({
+//         appState: requestState({ appState, type }),
+//       }));
+
+//       let params = {};
+//       if (filterStatus !== 'all') {
+//         params = {
+//           isDone: filterStatus === 'completed',
+//         };
+//       }
+
+//       const res = await axiosInstance.get('todoList', {
+//         params,
+//       });
+
+//       console.log(res.data);
+
+//       this.setState(({ appState }) => ({
+//         todoList: res.data,
+//         filterStatus,
+//         appState: successState({ appState, type }),
+//       }));
+//     } catch (error) {
+//       this.setState(({ appState }) => ({
+//         appState: errorState({ appState, type, error }),
+//       }));
+//     }
+//   };
+
+//   addTodo = async (event) => {
+//     event.preventDefault();
+//     const type = 'ADD_TODO';
+//     try {
+//       this.setState(({ appState }) => ({
+//         appState: requestState({ appState, type }),
+//       }));
+
+//       const res = await axiosInstance.post('todoList', {
+//         text: this.todoTextRef.current.value,
+//         isDone: false,
+//       });
+
+//       this.setState(
+//         ({ todoList, appState }) => ({
+//           todoList: [...todoList, res.data],
+//           appState: successState({ appState, type }),
+//         }),
+//         () => {
+//           this.todoTextRef.current.value = '';
+//         },
+//       );
+//     } catch (error) {
+//       this.setState(({ appState }) => ({
+//         appState: errorState({ appState, type, error }),
+//       }));
+//     }
+//   };
+
+//   updateTodo = async (item) => {
+//     const type = 'UPDATE_TODO';
+//     const loadingId = item.id;
+//     try {
+//       this.setState(({ appState }) => ({
+//         appState: requestState({
+//           appState,
+//           type,
+//           loadingId,
+//         }),
+//       }));
+
+//       const res = await axiosInstance.put(
+//         `todoList/${item.id}`,
+//         {
+//           ...item,
+//           isDone: !item.isDone,
+//         },
+//       );
+
+//       this.setState(({ todoList, appState }) => {
+//         const index = todoList.findIndex(
+//           (x) => x.id === item.id,
+//         );
+//         return {
+//           todoList: [
+//             ...todoList.slice(0, index),
+//             res.data,
+//             ...todoList.slice(index + 1),
+//           ],
+//           appState: successState({
+//             appState,
+//             type,
+//             loadingId,
+//           }),
+//         };
+//       });
+//     } catch (error) {
+//       this.setState(({ appState }) => ({
+//         appState: errorState({
+//           appState,
+//           type,
+//           error,
+//           loadingId,
+//         }),
+//       }));
+//     }
+//   };
+
+//   deleteTodo = async (item) => {
+//     const type = 'DELETE_TODO';
+//     const loadingId = item.id;
+//     try {
+//       this.setState(({ appState }) => ({
+//         appState: requestState({
+//           appState,
+//           type,
+//           loadingId,
+//         }),
+//       }));
+//       await axiosInstance.delete(`todoList/${item.id}`);
+
+//       this.setState(({ todoList, appState }) => {
+//         const index = todoList.findIndex(
+//           (x) => x.id === item.id,
+//         );
+//         return {
+//           todoList: [
+//             ...todoList.slice(0, index),
+//             ...todoList.slice(index + 1),
+//           ],
+//           appState: successState({
+//             appState,
+//             type,
+//             loadingId,
+//           }),
+//         };
+//       });
+//     } catch (error) {
+//       this.setState(({ appState }) => ({
+//         appState: errorState({
+//           appState,
+//           type,
+//           error,
+//           loadingId,
+//         }),
+//       }));
+//     }
+//   };
+
+//   render() {
+//     const { todoList, filterStatus, appState } = this.state;
+
+//     const loadTodoState = appState.find(
+//       (x) => x.type === 'LOAD_TODO',
+//     );
+
+//     const addTodoState = appState.find(
+//       (x) => x.type === 'ADD_TODO',
+//     );
+
+//     const updateTodoState = appState.filter(
+//       (x) => x.type === 'UPDATE_TODO',
+//     );
+
+//     const deleteTodoState = appState.filter(
+//       (x) => x.type === 'DELETE_TODO',
+//     );
+
+//     if (loadTodoState?.status === 'REQUEST') {
+//       return <h1>Loading...</h1>;
+//     }
+
+//     if (loadTodoState?.status === 'ERROR') {
+//       return <h1>{loadTodoState.message}</h1>;
+//     }
+
+//     return (
+//       <div className="todo">
+//         <h1 className="todo__title">Todo App</h1>
+//         <TodoForm
+//           addTodo={this.addTodo}
+//           ref={this.todoTextRef}
+//           addTodoState={addTodoState}
+//         />
+//         <div className="todo__list">
+//           {todoList.length > 0 && (
+//             <TodoList
+//               todoList={todoList}
+//               updateTodo={this.updateTodo}
+//               deleteTodo={this.deleteTodo}
+//               updateTodoState={updateTodoState}
+//               deleteTodoState={deleteTodoState}
+//             />
+//           )}
+//         </div>
+//         <TodoFilter
+//           filterStatus={filterStatus}
+//           filterTodo={this.loadTodo}
+//         />
+//       </div>
+//     );
+//   }
+// }
