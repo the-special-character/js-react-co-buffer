@@ -7,6 +7,7 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'main.js',
+    publicPath: '/',
   },
   module: {
     rules: [
@@ -19,7 +20,12 @@ module.exports = {
         test: /\.scss$/,
         exclude: /node_modules/,
         // sequance should be right to left
-        use: ['style-loader', 'css-loader', 'postcss-loader', 'sass-loader'],
+        use: [
+          'style-loader',
+          'css-loader',
+          'postcss-loader',
+          'sass-loader',
+        ],
       },
     ],
   },
@@ -36,5 +42,6 @@ module.exports = {
   devServer: {
     port: '3004',
     open: true,
+    historyApiFallback: true,
   },
 };
