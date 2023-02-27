@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { CounterContext } from '../../context/counterContext';
 
 function Login() {
   const navigate = useNavigate();
-
   return (
     <form
       className="mt-8 space-y-6"
@@ -13,9 +13,13 @@ function Login() {
             email: 'yagnesh.modh@gmail.com',
             password: 'Password1!',
           },
+          replace: true,
         });
       }}
     >
+      <CounterContext.Consumer>
+        {(data) => <h1>{data.counter}</h1>}
+      </CounterContext.Consumer>
       <input
         type="hidden"
         name="remember"

@@ -1,12 +1,25 @@
-import React from 'react';
-import { useLocation } from 'react-router-dom';
+import React, { useState } from 'react';
+import { CounterContext } from '../../context/counterContext';
 
 function Home() {
-  const { state } = useLocation();
-
   return (
     <div>
-      <h1>{`Hello ${state.email}`}</h1>
+      <h1>Home Page</h1>
+      <CounterContext.Consumer>
+        {(data) => (
+          <div>
+            <p>{data.counter}</p>
+            <button
+              type="button"
+              onClick={() => {
+                data.setCounter((val) => val + 1);
+              }}
+            >
+              Increment Counter
+            </button>
+          </div>
+        )}
+      </CounterContext.Consumer>
     </div>
   );
 }

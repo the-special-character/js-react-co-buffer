@@ -6,9 +6,10 @@ import {
 import React, { Fragment } from 'react';
 import {
   Bars3Icon,
-  BellIcon,
+  ShoppingBagIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline';
+import { CounterContext } from '../../context/counterContext';
 
 const navigation = [
   { name: 'Dashboard', href: '#', current: true },
@@ -85,15 +86,15 @@ function Header() {
               <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
                 <button
                   type="button"
-                  className="rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
+                  className="flex items-center gap-2 rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
                 >
-                  <span className="sr-only">
-                    View notifications
-                  </span>
-                  <BellIcon
+                  <ShoppingBagIcon
                     className="h-6 w-6"
                     aria-hidden="true"
                   />
+                  <CounterContext.Consumer>
+                    {(data) => <span>{data.counter}</span>}
+                  </CounterContext.Consumer>
                 </button>
 
                 {/* Profile dropdown */}
