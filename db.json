@@ -25,5 +25,25 @@
       "isDone": false,
       "id": 24
     }
+  ],
+  "users": [
+    {
+      "email": "yagnesh.modh@gmail.com",
+      "password": "$2a$10$ig8tt8mqzkQNfUrN1kU6E.UmjHW2VQ2CAQ5m2Q1nXQZ9cE/p8oAaC",
+      "name": "Yagnesh Modh",
+      "id": 1
+    },
+    {
+      "email": "test@test.com",
+      "password": "$2a$10$sU0RExeDE1yIn7eXL2QecubBXVNqFj4PNhQBmEbilbb3AKdhik.Xu",
+      "name": "yagnesh modh",
+      "id": 2
+    },
+    {
+      "email": "scadmin1@gmail.com",
+      "password": "$2a$10$qI6P6vQEogmFMDcY9/9tKutYnSM0dMP9bb8O7IwXchtcml//mNwXe",
+      "name": "test",
+      "id": 3
+    }
   ]
 }
