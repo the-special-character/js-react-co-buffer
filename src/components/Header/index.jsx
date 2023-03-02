@@ -3,13 +3,14 @@ import {
   Menu,
   Transition,
 } from '@headlessui/react';
-import React, { Fragment } from 'react';
+import React, { Fragment, useContext } from 'react';
 import {
   Bars3Icon,
   ShoppingBagIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline';
 import { CounterContext } from '../../context/counterContext';
+import { AuthContext } from '../../context/authContext';
 
 const navigation = [
   { name: 'Dashboard', href: '#', current: true },
@@ -23,6 +24,8 @@ function classNames(...classes) {
 }
 
 function Header() {
+  const { logout } = useContext(AuthContext);
+
   return (
     <Disclosure as="nav" className="bg-gray-800">
       {({ open }) => (
@@ -149,15 +152,16 @@ function Header() {
                       </Menu.Item>
                       <Menu.Item>
                         {({ active }) => (
-                          <a
-                            href="#"
+                          <button
+                            type="button"
                             className={classNames(
                               active ? 'bg-gray-100' : '',
-                              'block px-4 py-2 text-sm text-gray-700',
+                              'w-full text-left block px-4 py-2 text-sm text-gray-700',
                             )}
+                            onClick={logout}
                           >
                             Sign out
-                          </a>
+                          </button>
                         )}
                       </Menu.Item>
                     </Menu.Items>

@@ -1,19 +1,13 @@
-import React, { useEffect } from 'react';
-import {
-  Link,
-  Outlet,
-  useNavigate,
-} from 'react-router-dom';
+import React, { useContext } from 'react';
+import { Link, Navigate, Outlet } from 'react-router-dom';
+import { AuthContext } from '../context/authContext';
 
 function AuthLayout() {
-  const navigate = useNavigate();
+  const { user } = useContext(AuthContext);
 
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      navigate('/', { replace: true });
-    }
-  }, []);
+  if (user) {
+    return <Navigate to="/" replace />;
+  }
 
   return (
     <div className="flex min-h-full items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
@@ -28,7 +22,7 @@ function AuthLayout() {
             Sign in to your account
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
-            Or{' '}
+            Or
             <Link
               to="register"
               className="font-medium text-indigo-600 hover:text-indigo-500"
