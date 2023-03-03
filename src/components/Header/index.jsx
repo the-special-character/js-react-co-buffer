@@ -11,6 +11,7 @@ import {
 } from '@heroicons/react/24/outline';
 import { CounterContext } from '../../context/counterContext';
 import { AuthContext } from '../../context/authContext';
+import { CartContext } from '../../context/cartContext';
 
 const navigation = [
   { name: 'Dashboard', href: '#', current: true },
@@ -25,6 +26,7 @@ function classNames(...classes) {
 
 function Header() {
   const { logout } = useContext(AuthContext);
+  const { cart } = useContext(CartContext);
 
   return (
     <Disclosure as="nav" className="bg-gray-800">
@@ -95,9 +97,12 @@ function Header() {
                     className="h-6 w-6"
                     aria-hidden="true"
                   />
-                  <CounterContext.Consumer>
-                    {(data) => <span>{data.counter}</span>}
-                  </CounterContext.Consumer>
+                  <span>
+                    {cart.reduce(
+                      (p, c) => p + c.quantity,
+                      0,
+                    )}
+                  </span>
                 </button>
 
                 {/* Profile dropdown */}
