@@ -9,7 +9,6 @@ import {
   ShoppingBagIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline';
-import { CounterContext } from '../../context/counterContext';
 import { AuthContext } from '../../context/authContext';
 import { CartContext } from '../../context/cartContext';
 

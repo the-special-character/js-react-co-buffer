@@ -1,27 +1,46 @@
 import React, {
   createContext,
   useCallback,
+  useContext,
   useMemo,
-  useState,
+  useReducer,
 } from 'react';
+import PropTypes from 'prop-types';
 import axiosInstance from '../utils/axiosInstance';
+import {
+  initialProductsState,
+  productsReducer,
+} from '../reducers/productsReducer';
+import useDispatch from '../hooks/useDispatch';
 
 export const ProductsContext = createContext();
 
 export function ProductsProvider({ children }) {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [products, setProducts] = useState([]);
+  const [products, dispatch] = useReducer(
+    productsReducer,
+    initialProductsState,
+  );
+
+  const { loadDispatch, successDispatch, errDispatch } =
+    useDispatch(dispatch);
 
   const loadProducts = useCallback(async () => {
+    const actionName = 'LOAD_PRODUCTS';
     try {
-      setLoading(true);
+      loadDispatch({
+        type: `${actionName}_REQUEST`,
+        payload: { message: 'Products are loading...' },
+      });
       const res = await axiosInstance.get('products');
-      setProducts(res.data);
+      successDispatch({
+        type: `${actionName}_SUCCESS`,
+        payload: res.data,
+      });
     } catch (err) {
-      setError(err);
-    } finally {
-      setLoading(false);
+      errDispatch({
+        type: `${actionName}_FAIL`,
+        payload: { message: err.message },
+      });
     }
   }, []);
 
@@ -29,10 +48,8 @@ export function ProductsProvider({ children }) {
     () => ({
       loadProducts,
       products,
-      productsLoading: loading,
-      productsError: error,
     }),
-    [products, loading, error],
+    [products],
   );
 
   return (
@@ -41,3 +58,10 @@ export function ProductsProvider({ children }) {
     </ProductsContext.Provider>
   );
 }
+
+ProductsProvider.propTypes = {
+  children: PropTypes.node.isRequired,
+};
+
+export const useProducts = () =>
+  useContext(ProductsContext);
