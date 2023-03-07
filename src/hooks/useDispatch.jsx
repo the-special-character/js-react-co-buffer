@@ -6,38 +6,57 @@ const useDispatch = (dispatch) => {
   const { errorDispatch } = useError();
   const { loadingDispatch } = useLoading();
 
-  const loadDispatch = useCallback(({ type, payload }) => {
-    loadingDispatch({
-      type,
-      payload,
-    });
-    errorDispatch({
-      type,
-    });
-  }, []);
-
-  const successDispatch = useCallback(
-    ({ type, payload }) => {
-      dispatch({
-        type,
-        payload,
-      });
-      loadingDispatch({
-        type,
-      });
+  const generateType = useCallback(
+    (type, loadingId, actionName) => {
+      if (loadingId) {
+        return `${type}_${loadingId}_${actionName}`;
+      }
+      return `${type}_${actionName}`;
     },
     [],
   );
 
-  const errDispatch = useCallback(({ type, payload }) => {
-    loadingDispatch({
-      type,
-    });
-    errorDispatch({
-      type,
-      payload,
-    });
-  }, []);
+  const loadDispatch = useCallback(
+    ({ type, payload, loadingId }) => {
+      const actionName = 'REQUEST';
+      loadingDispatch({
+        type: generateType(type, loadingId, actionName),
+        payload,
+      });
+      errorDispatch({
+        type: generateType(type, loadingId, actionName),
+      });
+    },
+    [generateType],
+  );
+
+  const successDispatch = useCallback(
+    ({ type, payload, loadingId }) => {
+      const actionName = 'SUCCESS';
+      dispatch({
+        type: generateType(type, undefined, actionName),
+        payload,
+      });
+      loadingDispatch({
+        type: generateType(type, loadingId, actionName),
+      });
+    },
+    [generateType],
+  );
+
+  const errDispatch = useCallback(
+    ({ type, payload, loadingId }) => {
+      const actionName = 'FAIL';
+      loadingDispatch({
+        type: generateType(type, loadingId, actionName),
+      });
+      errorDispatch({
+        type: generateType(type, loadingId, actionName),
+        payload,
+      });
+    },
+    [generateType],
+  );
 
   return {
     loadDispatch,

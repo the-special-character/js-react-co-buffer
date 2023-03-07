@@ -18,18 +18,24 @@ function Home() {
     cart,
   } = useContext(CartContext);
 
-  const { error } = useError();
+  // const { error } = useError();
   const { loading } = useLoading();
 
-  console.log(loading);
-  console.log(error);
+  console.log(JSON.stringify(loading));
 
   useEffect(() => {
     loadProducts();
     loadCart();
   }, []);
 
-  console.log(cart);
+  if (loading['LOAD_PRODUCTS'] || loading['LOAD_CART']) {
+    return (
+      <div>
+        <p>{loading['LOAD_PRODUCTS']?.message}</p>
+        <p>{loading['LOAD_CART']?.message}</p>
+      </div>
+    );
+  }
 
   return (
     <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
@@ -114,13 +120,16 @@ function Home() {
                   <div className="flex items-center">
                     <button
                       type="button"
+                      disabled={
+                        loading[`UPDATE_CART_${product.id}`]
+                      }
                       onClick={() =>
                         updateCartItem({
                           ...cartItem,
                           quantity: cartItem.quantity + 1,
                         })
                       }
-                      className="flex-1 items-center justify-center rounded-md border border-transparent bg-indigo-600 py-3 px-8 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                      className="flex-1 items-center justify-center rounded-md border border-transparent bg-indigo-600 py-3 px-8 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:bg-slate-400 disabled:cursor-wait"
                     >
                       +
                     </button>
@@ -129,6 +138,15 @@ function Home() {
                     </p>
                     <button
                       type="button"
+                      disabled={
+                        cartItem.quantity > 1
+                          ? loading[
+                              `UPDATE_CART_${product.id}`
+                            ]
+                          : loading[
+                              `DELETE_CART_${product.id}`
+                            ]
+                      }
                       onClick={() => {
                         if (cartItem.quantity > 1) {
                           updateCartItem({
@@ -139,7 +157,7 @@ function Home() {
                           deleteCartItem(cartItem);
                         }
                       }}
-                      className="flex-1 items-center justify-center rounded-md border border-transparent bg-indigo-600 py-3 px-8 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                      className="flex-1 items-center justify-center rounded-md border border-transparent bg-indigo-600 py-3 px-8 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:bg-slate-400 disabled:cursor-wait"
                     >
                       -
                     </button>
@@ -147,13 +165,16 @@ function Home() {
                 ) : (
                   <button
                     type="button"
+                    disabled={
+                      loading[`ADD_CART_${product.id}`]
+                    }
                     onClick={() =>
                       addToCart({
                         productId: product.id,
                         quantity: 1,
                       })
                     }
-                    className="mt-6 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 py-3 px-8 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                    className="mt-6 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 py-3 px-8 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:bg-slate-400 disabled:cursor-wait"
                   >
                     Add to bag
                   </button>
