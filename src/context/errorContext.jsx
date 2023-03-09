@@ -1,5 +1,6 @@
 import React, {
   createContext,
+  useCallback,
   useContext,
   useMemo,
   useReducer,
@@ -18,9 +19,14 @@ export function ErrorProvider({ children }) {
     initErrorState,
   );
 
+  const removeError = useCallback((payload) => {
+    errorDispatch({ type: 'REMOVE_ERROR', payload });
+  }, []);
+
   const value = useMemo(
     () => ({
       error,
+      removeError,
       errorDispatch,
     }),
     [error],

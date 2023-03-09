@@ -39,7 +39,10 @@ export function ProductsProvider({ children }) {
     } catch (err) {
       errDispatch({
         type,
-        payload: { message: err.message },
+        payload: {
+          message: err.message,
+          title: 'Load Products Failed',
+        },
       });
     }
   }, []);

@@ -38,7 +38,10 @@ export function CartProvider({ children }) {
     } catch (err) {
       errDispatch({
         type,
-        payload: { message: err.message },
+        payload: {
+          message: err.message,
+          title: 'Load Cart Failed',
+        },
       });
     }
   }, []);
@@ -62,7 +65,10 @@ export function CartProvider({ children }) {
     } catch (err) {
       errDispatch({
         type,
-        payload: { message: err.message },
+        payload: {
+          message: err.message,
+          title: 'Add Cart Failed',
+        },
         loadingId: data.productId,
       });
     }
@@ -88,7 +94,10 @@ export function CartProvider({ children }) {
     } catch (err) {
       errDispatch({
         type,
-        payload: { message: err.message },
+        payload: {
+          message: err.message,
+          title: 'Update Cart Failed',
+        },
         loadingId: data.productId,
       });
     }
@@ -112,7 +121,10 @@ export function CartProvider({ children }) {
     } catch (err) {
       errDispatch({
         type,
-        payload: { message: err.message },
+        payload: {
+          message: err.message,
+          title: 'Delete Cart Failed',
+        },
         loadingId: data.productId,
       });
     }

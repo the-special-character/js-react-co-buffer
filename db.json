@@ -291,12 +291,12 @@
   "cart": [
     {
       "productId": 1,
-      "quantity": 3,
+      "quantity": 4,
       "id": 1
     },
     {
       "productId": 2,
-      "quantity": 3,
+      "quantity": 4,
       "id": 2
     },
     {
