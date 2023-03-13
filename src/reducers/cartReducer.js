@@ -1,6 +1,9 @@
 export const initialCartState = [];
 
-export const cartReducer = (state, { type, payload }) => {
+export const cartReducer = (
+  state = initialCartState,
+  { type, payload },
+) => {
   switch (type) {
     case 'LOAD_CART_SUCCESS':
       return payload;

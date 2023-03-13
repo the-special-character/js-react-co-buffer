@@ -1,7 +1,7 @@
 export const initLoadingState = {};
 
 export const loadingReducer = (
-  state,
+  state = initLoadingState,
   { type, payload },
 ) => {
   const match = /(.*)_(REQUEST|SUCCESS|FAIL)/.exec(type);

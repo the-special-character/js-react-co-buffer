@@ -1,7 +1,7 @@
 export const initialProductsState = [];
 
 export const productsReducer = (
-  state,
+  state = initialProductsState,
   { type, payload },
 ) => {
   switch (type) {

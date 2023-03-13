@@ -1,6 +1,9 @@
 export const initErrorState = {};
 
-export const errorReducer = (state, { type, payload }) => {
+export const errorReducer = (
+  state = initErrorState,
+  { type, payload },
+) => {
   if (type === 'REMOVE_ERROR') {
     const { [payload]: key, ...rest } = state;
     return rest;
