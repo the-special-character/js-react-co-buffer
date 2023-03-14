@@ -1,15 +1,16 @@
 import React from 'react';
 import { useError } from '../../context/errorContext';
+import { useDispatch, useSelector } from 'react-redux';
 
 function Errors() {
-  const { error, removeError } = useError();
-
-  console.log(error);
+  const erros = useSelector((state) => state.erros);
+  const dispatch = useDispatch();
 
   return (
     <>
-      {Object.keys(error).map((x, i) => (
+      {erros.map((x, i) => (
         <div
+          key={i}
           className="fixed w-full md:w-2/3 lg:w-1/2 left-0 z-10"
           style={{
             bottom: i * 80,
@@ -30,16 +31,19 @@ function Errors() {
                 </svg>
               </div>
               <div className="flex-1">
-                <p className="font-bold">
-                  {error[x].title}
-                </p>
-                <p className="text-sm">
-                  {error[x].message}
-                </p>
+                <p className="font-bold">{x.title}</p>
+                <p className="text-sm">{x.message}</p>
               </div>
               <button
                 type="button"
-                onClick={() => removeError(x)}
+                onClick={() =>
+                  dispatch({
+                    type: 'REMOVE_ERROR',
+                    meta: {
+                      index: i,
+                    },
+                  })
+                }
               >
                 <svg
                   className="fill-current h-6 w-6 text-red-500 mr-4"

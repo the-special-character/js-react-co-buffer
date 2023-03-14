@@ -4,14 +4,30 @@ import Review from '../Review';
 import axiosInstance from '../../utils/axiosInstance';
 
 function Product({ product }) {
-  const { cart: cartItem, loading } = useSelector(
-    (state) => ({
-      cart: state.cart.find(
-        (item) => item.productId === product.id,
-      ),
-      loading: state.loading,
-    }),
-  );
+  const {
+    cart: cartItem,
+    isAdding,
+    isUpdating,
+    isDeleting,
+  } = useSelector((state) => ({
+    cart: state.cart.find(
+      (item) => item.productId === product.id,
+    ),
+    isAdding: state.loading.some(
+      (x) =>
+        x.id === product.id && x.actionName === 'ADD_CART',
+    ),
+    isUpdating: state.loading.some(
+      (x) =>
+        x.id === product.id &&
+        x.actionName === 'UPDATE_CART',
+    ),
+    isDeleting: state.loading.some(
+      (x) =>
+        x.id === product.id &&
+        x.actionName === 'DELETE_CART',
+    ),
+  }));
 
   const dispatch = useDispatch();
 
@@ -20,20 +36,22 @@ function Product({ product }) {
       const type = 'ADD_CART';
       try {
         dispatch({
-          type: `${type}_${product.id}_REQUEST`,
-          payload: {
+          type: `${type}_REQUEST`,
+          meta: {
+            id: data.productId,
             message: 'Cart Item is adding...',
           },
         });
         const res = await axiosInstance.post('cart', data);
         dispatch({
-          type: `${type}_${product.id}_SUCCESS`,
+          type: `${type}_SUCCESS`,
           payload: res.data,
         });
       } catch (error) {
         dispatch({
-          type: `${type}_${product.id}_FAIL`,
-          payload: {
+          type: `${type}_FAIL`,
+          meta: {
+            id: data.productId,
             message: error.message,
             title: 'Add Cart Failed',
           },
@@ -47,21 +65,25 @@ function Product({ product }) {
     const type = 'UPDATE_CART';
     try {
       dispatch({
-        type: `${type}_${product.id}_REQUEST`,
-        payload: { message: 'Cart Item is updating...' },
+        type: `${type}_REQUEST`,
+        meta: {
+          id: data.productId,
+          message: 'Cart Item is updating...',
+        },
       });
       const res = await axiosInstance.put(
         `cart/${data.id}`,
         data,
       );
       dispatch({
-        type: `${type}_${product.id}_SUCCESS`,
+        type: `${type}_SUCCESS`,
         payload: res.data,
       });
     } catch (err) {
       dispatch({
-        type: `${type}_${product.id}_FAIL`,
-        payload: {
+        type: `${type}_FAIL`,
+        meta: {
+          id: data.productId,
           message: err.message,
           title: 'Update Cart Failed',
         },
@@ -73,19 +95,23 @@ function Product({ product }) {
     const type = 'DELETE_CART';
     try {
       dispatch({
-        type: `${type}_${product.id}_REQUEST`,
-        payload: { message: 'Cart Item is deleting...' },
+        type: `${type}_REQUEST`,
+        meta: {
+          id: data.productId,
+          message: 'Cart Item is deleting...',
+        },
       });
       await axiosInstance.delete(`cart/${data.id}`);
 
       dispatch({
-        type: `${type}_${product.id}_SUCCESS`,
+        type: `${type}_SUCCESS`,
         payload: data,
       });
     } catch (err) {
       dispatch({
-        type: `${type}_${product.id}_FAIL`,
-        payload: {
+        type: `${type}_FAIL`,
+        meta: {
+          id: data.productId,
           message: err.message,
           title: 'Delete Cart Failed',
         },
@@ -138,9 +164,7 @@ function Product({ product }) {
             <div className="flex items-center">
               <button
                 type="button"
-                disabled={
-                  loading[`UPDATE_CART_${product.id}`]
-                }
+                disabled={isUpdating}
                 onClick={() =>
                   updateCartItem({
                     ...cartItem,
@@ -158,8 +182,8 @@ function Product({ product }) {
                 type="button"
                 disabled={
                   cartItem.quantity > 1
-                    ? loading[`UPDATE_CART_${product.id}`]
-                    : loading[`DELETE_CART_${product.id}`]
+                    ? isUpdating
+                    : isDeleting
                 }
                 onClick={() => {
                   if (cartItem.quantity > 1) {
@@ -179,7 +203,7 @@ function Product({ product }) {
           ) : (
             <button
               type="button"
-              disabled={loading[`ADD_CART_${product.id}`]}
+              disabled={isAdding}
               onClick={() =>
                 addToCart({
                   productId: product.id,
